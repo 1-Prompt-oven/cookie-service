@@ -32,11 +32,11 @@ public class CookieRepositoryImpl implements CookieRepositoryCustom {
 
         // Cursor 기반 조건 추가
         if (requestDto.getLastId() != null) {
-            query.addCriteria(Criteria.where("_id").gt(requestDto.getLastId()));
+            query.addCriteria(Criteria.where("_id").lt(requestDto.getLastId())); // 내림차순으로 이전 페이지 조회
         }
 
-        // 정렬 및 페이징 설정
-        query.with(Sort.by(Sort.Direction.ASC, "_id"));
+        // 정렬을 내림차순으로 변경하여 최신 항목이 먼저 나오도록 설정
+        query.with(Sort.by(Sort.Direction.DESC, "_id"));
         query.limit(requestDto.getPageSize() + 1); // +1 to check if there is a next page
 
         List<Cookie> cookies = mongoTemplate.find(query, Cookie.class);
@@ -55,4 +55,3 @@ public class CookieRepositoryImpl implements CookieRepositoryCustom {
         return new CursorPage<>(cookieDtos, nextCursor, hasNext, requestDto.getPageSize(), 0);
     }
 }
-
