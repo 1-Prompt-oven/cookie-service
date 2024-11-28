@@ -16,19 +16,21 @@ public class Cookie {
     @Id
     private String id;
 
-    private int quantity;
-    private int changeAmount;
-    private LocalDateTime transactionDate;
-    private String transactionType;
-    private String memberUUID;
+    private Long paymentId;
+    private String memberUuid;
+    private Integer cookieAmount;
+    private LocalDateTime approvedAt;
+    private PaymentType paymentType;
+    private Integer quantity;
 
     @Builder
-    public Cookie(String id, int quantity, int changeAmount, LocalDateTime transactionDate, String transactionType, String memberUUID) {
+    public Cookie(String id, Long paymentId, String memberUuid, Integer cookieAmount, LocalDateTime approvedAt, PaymentType paymentType, Integer quantity) {
         this.id = id;
+        this.paymentId = paymentId;
+        this.memberUuid = memberUuid;
+        this.cookieAmount = cookieAmount;
+        this.approvedAt = approvedAt;
+        this.paymentType = paymentType;
         this.quantity = quantity;
-        this.changeAmount = changeAmount;
-        this.transactionDate = transactionDate;
-        this.transactionType = transactionType;
-        this.memberUUID = memberUUID;
     }
 }

@@ -6,7 +6,7 @@ import com.promptoven.cookieservice.member.cookie.dto.in.CookieGetRequestDto;
 import com.promptoven.cookieservice.member.cookie.dto.out.CookieGetResponseDto;
 
 public interface CookieService {
-    void createCookie(CookieCreateRequestDto requestDto);
+    void createCookieUsage(CookieCreateRequestDto requestDto);
 
     CursorPage<CookieGetResponseDto> getCookiesByMemberUuid(CookieGetRequestDto requestDto);
 
