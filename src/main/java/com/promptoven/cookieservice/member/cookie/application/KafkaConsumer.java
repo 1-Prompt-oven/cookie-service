@@ -19,7 +19,7 @@ public class KafkaConsumer {
     private final CookieRepositoryCustom cookieRepositoryCustom;
     private final CookieRepository cookieRepository;
 
-    @KafkaListener(topics = "${payment-cookie-create-event}", groupId = "kafka-payment-purchase-service")
+    @KafkaListener(topics = "${payment-cookie-create-event}", groupId = "kafka-payment-cookie-service")
     public void consumeCreate(RequestCookieMessageDto message) {
 
         Optional<Cookie> optionalCookie = cookieRepositoryCustom.findTopByOrderByApprovedAtDesc(message.getMemberUuid());

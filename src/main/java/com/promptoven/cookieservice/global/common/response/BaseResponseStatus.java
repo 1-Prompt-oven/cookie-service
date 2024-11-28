@@ -16,7 +16,7 @@ public enum BaseResponseStatus {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, false, "잘못된 요청입니다."),
     INVALID_FILE_FORMAT(HttpStatus.BAD_REQUEST, false, "잘못된 파일 형식입니다."),
     FILE_IS_EMPTY(HttpStatus.BAD_REQUEST, false, "파일이 비어있습니다."),
-
+    INSUFFICIENT_COOKIES(HttpStatus.BAD_REQUEST, false, "쿠키가 부족하여 사용할 수 없습니다."),
 
     /*
      * 404 NOT_FOUND: 리소스를 찾을 수 없음

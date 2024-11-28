@@ -2,6 +2,8 @@ package com.promptoven.cookieservice.member.cookie.application;
 
 import com.promptoven.cookieservice.common.domain.Cookie;
 import com.promptoven.cookieservice.global.common.CursorPage;
+import com.promptoven.cookieservice.global.common.response.BaseResponseStatus;
+import com.promptoven.cookieservice.global.error.BaseException;
 import com.promptoven.cookieservice.member.cookie.dto.in.CookieCreateRequestDto;
 import com.promptoven.cookieservice.member.cookie.dto.in.CookieGetRequestDto;
 import com.promptoven.cookieservice.member.cookie.dto.out.CookieGetResponseDto;
@@ -30,7 +32,12 @@ public class CookieServiceImpl implements CookieService {
         // 값이 없으면 기본값 0 사용
         Integer lastQuantity = optionalCookie.map(Cookie::getQuantity).orElse(0);
 
-        // 새 쿠키 저장
+        // 쿠키 부족 예외 처리
+        if (lastQuantity < requestDto.getCookieAmount()) {
+            throw new BaseException(BaseResponseStatus.INSUFFICIENT_COOKIES);
+        }
+
+        // 새로운 쿠키 저장
         cookieRepository.save(CookieCreateRequestDto.toDocument(requestDto, lastQuantity));
     }
 

@@ -27,7 +27,7 @@ public class KafkaConsumerConfig {
     public ConsumerFactory<String, RequestCookieMessageDto> consumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "kafka-payment-purchase-service");
+        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "kafka-payment-cookie-service");
 
         // ErrorHandlingDeserializer 설정
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
