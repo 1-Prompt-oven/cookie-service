@@ -5,6 +5,15 @@ spring:
       port: 27017
       database: cookie-service
 
+  config:
+    import: classpath:eventTopic.yml
+
+  kafka:
+    text-bootstrap-servers: localhost:29092,localhost:39092,localhost:49092
+
 logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+server:
+  port: 8084

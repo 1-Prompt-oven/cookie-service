@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -23,35 +24,53 @@ public class CookieRepositoryImpl implements CookieRepositoryCustom {
     @Override
     public CursorPage<CookieGetResponseDto> getCookiesByCriteria(CookieGetRequestDto requestDto) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("memberUUID").is(requestDto.getMemberUuid()));
 
-        // 날짜 필터링 조건 추가
+        // memberUUID 필터 추가
+        query.addCriteria(Criteria.where("memberUuid").is(requestDto.getMemberUuid()));
+
+        // 날짜 범위 필터 추가
         if (requestDto.getStartDate() != null && requestDto.getEndDate() != null) {
-            query.addCriteria(Criteria.where("transactionDate").gte(requestDto.getStartDate()).lte(requestDto.getEndDate()));
+            query.addCriteria(Criteria.where("approvedAt").gte(requestDto.getStartDate()).lte(requestDto.getEndDate()));
         }
 
-        // Cursor 기반 조건 추가
+        // Cursor 조건 (approvedAt과 _id를 함께 사용)
         if (requestDto.getLastId() != null) {
-            query.addCriteria(Criteria.where("_id").lt(requestDto.getLastId())); // 내림차순으로 이전 페이지 조회
+            Cookie lastCookie = mongoTemplate.findById(requestDto.getLastId(), Cookie.class);
+            if (lastCookie != null) {
+                query.addCriteria(Criteria.where("approvedAt").lt(lastCookie.getApprovedAt())
+                        .orOperator(Criteria.where("approvedAt").is(lastCookie.getApprovedAt()).and("_id").lt(requestDto.getLastId())));
+            }
         }
 
-        // 정렬을 내림차순으로 변경하여 최신 항목이 먼저 나오도록 설정
-        query.with(Sort.by(Sort.Direction.DESC, "_id"));
-        query.limit(requestDto.getPageSize() + 1); // +1 to check if there is a next page
+        // 정렬 기준: approvedAt 내림차순, _id 내림차순
+        query.with(Sort.by(Sort.Direction.DESC, "approvedAt").and(Sort.by(Sort.Direction.DESC, "_id")));
+        query.limit(requestDto.getPageSize() + 1); // 페이지 크기 +1 (다음 페이지 존재 여부 확인)
 
         List<Cookie> cookies = mongoTemplate.find(query, Cookie.class);
 
+        // 다음 페이지 여부 판단
         boolean hasNext = cookies.size() > requestDto.getPageSize();
         if (hasNext) {
-            cookies.remove(cookies.size() - 1); // remove the extra element
+            cookies.remove(cookies.size() - 1); // 초과 데이터 제거
         }
 
+        // DTO 변환
         List<CookieGetResponseDto> cookieDtos = cookies.stream()
                 .map(CookieGetResponseDto::fromEntity)
                 .collect(Collectors.toList());
 
+        // 다음 Cursor 설정
         String nextCursor = hasNext ? cookies.get(cookies.size() - 1).getId().toString() : null;
 
         return new CursorPage<>(cookieDtos, nextCursor, hasNext, requestDto.getPageSize(), 0);
+    }
+
+    @Override
+    public Optional<Cookie> findTopByOrderByApprovedAtDesc(String memberUuid) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("memberUuid").is(memberUuid));
+        query.with(Sort.by(Sort.Direction.DESC, "approvedAt"));
+        query.limit(1);
+        return Optional.ofNullable(mongoTemplate.findOne(query, Cookie.class));
     }
 }
