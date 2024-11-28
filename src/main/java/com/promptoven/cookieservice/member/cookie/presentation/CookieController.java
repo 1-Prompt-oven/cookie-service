@@ -26,9 +26,9 @@ public class CookieController {
 
     @Operation(summary = "쿠키 사용내역 생성", description = "쿠키 사용내역 생성")
     @PostMapping
-    public BaseResponse<Void> createCookie(@RequestBody CookieCreateRequestVo requestVo) {
+    public BaseResponse<Void> createCookieUsage(@RequestBody CookieCreateRequestVo requestVo) {
 
-        cookieService.createCookie(CookieCreateRequestDto.toDto(requestVo));
+        cookieService.createCookieUsage(CookieCreateRequestDto.toDto(requestVo));
 
         return new BaseResponse<>();
     }

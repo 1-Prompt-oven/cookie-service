@@ -25,7 +25,7 @@ public class CookieServiceImpl implements CookieService {
     private final CookieRepositoryCustom cookieRepositoryCustom;
 
     @Override
-    public void createCookie(CookieCreateRequestDto requestDto) {
+    public void createCookieUsage(CookieCreateRequestDto requestDto) {
 
         Optional<Cookie> optionalCookie = cookieRepositoryCustom.findTopByOrderByApprovedAtDesc(requestDto.getMemberUuid());
 
