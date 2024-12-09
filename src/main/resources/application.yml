@@ -15,7 +15,7 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     operations-sorter: alpha
-  packages-to-scan: com.promptoven.cookieService  # 스캔할 패키지 명시
+  packages-to-scan: com.promptoven.cookieservice  # 스캔할 패키지 명시
   default-produces-media-type: application/json
   default-consumes-media-type: application/json
 
@@ -28,9 +28,6 @@ server:
 
 # local 설정
 ---
-server:
-  port: 8083
-
 spring:
   application:
     name: cookie-service
@@ -45,6 +42,9 @@ spring:
     text-bootstrap-servers: localhost:29092,localhost:39092,localhost:49092
     consumer:
       group-id: cookie-service
+  cloud:
+    config:
+      enabled: false
 
 # prod 설정
 ---
