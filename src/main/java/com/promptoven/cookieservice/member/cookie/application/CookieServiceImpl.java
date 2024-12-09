@@ -47,4 +47,10 @@ public class CookieServiceImpl implements CookieService {
     public CursorPage<CookieGetResponseDto> getCookiesByMemberUuid(CookieGetRequestDto requestDto) {
         return cookieRepositoryCustom.getCookiesByCriteria(requestDto);
     }
+
+    @Transactional
+    @Override
+    public void createCookie(CookieCreateRequestDto requestDto) {
+        cookieRepository.save(CookieCreateRequestDto.toDocument(requestDto, 0));
+    }
 }

@@ -70,4 +70,13 @@ public class CookieController {
 
         return new BaseResponse<>(cookiesVoPage);
     }
+
+    @Operation(summary = "쿠키 추가 테스트", description = "쿠키 추가 테스트")
+    @PostMapping("/test")
+    public BaseResponse<Void> createCookieUsageTest(@RequestBody CookieCreateRequestVo requestVo) {
+
+        cookieService.createCookie(CookieCreateRequestDto.toDto(requestVo));
+
+        return new BaseResponse<>();
+    }
 }
