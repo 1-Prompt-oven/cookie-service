@@ -54,4 +54,14 @@ public class CookieServiceImpl implements CookieService {
     public void createCookie(CookieCreateRequestDto requestDto) {
         cookieRepository.save(CookieCreateRequestDto.toDocument(requestDto, 0));
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Integer getLatestCookieAmount(String memberUuid) {
+
+        Optional<Cookie> cookie = cookieRepositoryCustom.findTopByOrderByApprovedAtDesc(memberUuid);
+
+        // 쿠키가 없으면 0을 반환, 쿠키가 있으면 해당 쿠키의 쿠키량을 반환
+        return cookie.map(Cookie::getQuantity).orElse(0);
+    }
 }

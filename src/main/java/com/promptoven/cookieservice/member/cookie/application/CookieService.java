@@ -11,4 +11,6 @@ public interface CookieService {
     CursorPage<CookieGetResponseDto> getCookiesByMemberUuid(CookieGetRequestDto requestDto);
 
     void createCookie(CookieCreateRequestDto requestDto);
+
+    Integer getLatestCookieAmount(String memberUuid);
 }

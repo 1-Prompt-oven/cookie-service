@@ -82,4 +82,10 @@ public class CookieController {
 
         return new BaseResponse<>();
     }
+
+    @Operation(summary = "제일 최신 쿠키량 조회", description = "제일 최신 쿠키량 조회")
+    @GetMapping("/latest")
+    public BaseResponse<Integer> getLatestCookieAmount(@RequestParam String memberUuid) {
+        return new BaseResponse<>(cookieService.getLatestCookieAmount(memberUuid));
+    }
 }
