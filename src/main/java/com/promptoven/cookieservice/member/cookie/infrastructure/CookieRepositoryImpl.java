@@ -33,6 +33,11 @@ public class CookieRepositoryImpl implements CookieRepositoryCustom {
             query.addCriteria(Criteria.where("approvedAt").gte(requestDto.getStartDate()).lte(requestDto.getEndDate()));
         }
 
+        // PaymentType 필터 추가
+        if (requestDto.getPaymentType() != null) {
+            query.addCriteria(Criteria.where("paymentType").is(requestDto.getPaymentType()));
+        }
+
         // Cursor 조건 (approvedAt과 _id를 함께 사용)
         if (requestDto.getLastId() != null) {
             Cookie lastCookie = mongoTemplate.findById(requestDto.getLastId(), Cookie.class);

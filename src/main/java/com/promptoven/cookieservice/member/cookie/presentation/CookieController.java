@@ -1,5 +1,6 @@
 package com.promptoven.cookieservice.member.cookie.presentation;
 
+import com.promptoven.cookieservice.common.domain.PaymentType;
 import com.promptoven.cookieservice.global.common.CursorPage;
 import com.promptoven.cookieservice.global.common.response.BaseResponse;
 import com.promptoven.cookieservice.member.cookie.application.CookieService;
@@ -24,7 +25,7 @@ public class CookieController {
 
     private final CookieService cookieService;
 
-    @Operation(summary = "쿠키 사용내역 생성", description = "쿠키 사용내역 생성")
+    @Operation(summary = "쿠키 사용 하기", description = "쿠키 사용 하기")
     @PostMapping
     public BaseResponse<Void> createCookieUsage(@RequestBody CookieCreateRequestVo requestVo) {
 
@@ -34,12 +35,13 @@ public class CookieController {
     }
 
 
-    @Operation(summary = "회원별 쿠키 조회", description = "회원 UUID로 쿠키 정보를 조회")
+    @Operation(summary = "회원별 쿠키 사용내역 조회", description = "회원 UUID로 쿠키 사용내역 조회")
     @GetMapping
     public BaseResponse<CursorPage<CookieGetResponseVo>> getCookiesByMemberUuid(
             @RequestParam String memberUuid,
             @RequestParam(required = false) LocalDateTime startDate,
             @RequestParam(required = false) LocalDateTime endDate,
+            @RequestParam(required = false) PaymentType paymentType,
             @RequestParam(required = false) String lastId,
             @RequestParam(defaultValue = "10") Integer pageSize) {
 
@@ -48,6 +50,7 @@ public class CookieController {
                 .memberUuid(memberUuid)
                 .startDate(startDate)
                 .endDate(endDate)
+                .paymentType(paymentType)
                 .lastId(lastId)
                 .pageSize(pageSize)
                 .build();

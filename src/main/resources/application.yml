@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: local
   application:
     name: cookie-service
   data:
@@ -32,11 +34,13 @@ spring:
   application:
     name: cookie-service
   config:
+    activate:
+      on-profile: local
     import:
       - classpath:eventTopic.yml
   data:
     mongodb:
-      uri: mongodb://localhost:27017/reviewDB?directConnection=true
+      uri: mongodb://localhost:27017/cookieDB?directConnection=true
   #      uri: mongodb+srv://1630202:minjihun@promptoven.5ld4d.mongodb.net/promptoven?retryWrites=true&w=majority&appName=promptoven
   kafka:
     text-bootstrap-servers: localhost:29092,localhost:39092,localhost:49092
@@ -45,6 +49,8 @@ spring:
   cloud:
     config:
       enabled: false
+server:
+  port: 8084
 
 # prod 설정
 ---

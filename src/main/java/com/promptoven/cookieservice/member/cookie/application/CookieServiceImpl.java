@@ -24,6 +24,7 @@ public class CookieServiceImpl implements CookieService {
     private final CookieRepository cookieRepository;
     private final CookieRepositoryCustom cookieRepositoryCustom;
 
+    @Transactional
     @Override
     public void createCookieUsage(CookieCreateRequestDto requestDto) {
 
