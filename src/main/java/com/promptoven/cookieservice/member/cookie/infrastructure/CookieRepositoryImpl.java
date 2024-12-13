@@ -42,30 +42,36 @@ public class CookieRepositoryImpl implements CookieRepositoryCustom {
         if (requestDto.getLastId() != null) {
             Cookie lastCookie = mongoTemplate.findById(requestDto.getLastId(), Cookie.class);
             if (lastCookie != null) {
-                query.addCriteria(Criteria.where("approvedAt").lt(lastCookie.getApprovedAt())
-                        .orOperator(Criteria.where("approvedAt").is(lastCookie.getApprovedAt()).and("_id").lt(requestDto.getLastId())));
+                query.addCriteria(new Criteria().orOperator(
+                        Criteria.where("approvedAt").lt(lastCookie.getApprovedAt()),
+                        Criteria.where("approvedAt").is(lastCookie.getApprovedAt()).and("_id").gte(lastCookie.getId())
+                ));
             }
         }
 
         // 정렬 기준: approvedAt 내림차순, _id 내림차순
-        query.with(Sort.by(Sort.Direction.DESC, "approvedAt").and(Sort.by(Sort.Direction.DESC, "_id")));
+        query.with(Sort.by(
+                Sort.Order.desc("approvedAt"),
+                Sort.Order.desc("_id")
+        ));
         query.limit(requestDto.getPageSize() + 1); // 페이지 크기 +1 (다음 페이지 존재 여부 확인)
 
         List<Cookie> cookies = mongoTemplate.find(query, Cookie.class);
 
         // 다음 페이지 여부 판단
         boolean hasNext = cookies.size() > requestDto.getPageSize();
+        String nextCursor = null;
+
         if (hasNext) {
-            cookies.remove(cookies.size() - 1); // 초과 데이터 제거
+            // 다음 페이지가 있다면 초과 데이터를 제거하고 nextCursor를 설정
+            Cookie lastCookie = cookies.remove(cookies.size() - 1); // 마지막 요소 제거
+            nextCursor = lastCookie.getId(); // 다음 페이지의 시작점이 될 ID
         }
 
         // DTO 변환
         List<CookieGetResponseDto> cookieDtos = cookies.stream()
                 .map(CookieGetResponseDto::fromEntity)
                 .collect(Collectors.toList());
-
-        // 다음 Cursor 설정
-        String nextCursor = hasNext ? cookies.get(cookies.size() - 1).getId().toString() : null;
 
         return new CursorPage<>(cookieDtos, nextCursor, hasNext, requestDto.getPageSize(), 0);
     }
