@@ -20,7 +20,7 @@ public class CookieCreateRequestDto {
         return CookieCreateRequestDto.builder()
                 .memberUuid(vo.getMemberUuid())
                 .cookieAmount(vo.getCookieAmount())
-                .approvedAt(vo.getApprovedAt())
+                .approvedAt(LocalDateTime.now())
                 .build();
     }
 
